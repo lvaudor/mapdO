@@ -1,5 +1,5 @@
 ---
-title: "guidelines"
+title: "guidelines: appli mapdO"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{guidelines}
@@ -18,6 +18,11 @@ knitr::opts_chunk$set(
 library(mapdO)
 ```
 
+
+Démo [ici](https://analytics.huma-num.fr/Lise.Vaudor/mapdO/)
+
+Repo github [ici](https://github.com/lvaudor/mapdO/)
+
 # Etat actuel de l'appli
 
 ## Structure
@@ -25,20 +30,23 @@ library(mapdO)
 Pour l'instant, deux modules:
 
 - un module **profils**
-- un module **modèles régionaux
+- un module **modèles régionaux**
 
 Les deux jeux de données sont pour l'instant différents pour les deux modules: il faudra, in fine, homogénéiser ça quand les jeux de données "définitifs" seront disponibles.
 
+Un des points à discuter pour améliorer la lisibilité de l'appli: quels noms donner aux couches, et aux modules, pour être plus compréhensible par les utilisateurs? L'appli sera-t-elle en français ou en anglais?
 
 ## Layout
 
 Pour l'instant j'ai appelé l'appli "mapdO" et j'ai fait un faux logo vite fait pour la démo.
 
-J'ai choixi un menu type "tabs" pour les différents modules mais on peut sans difficulté tester des types de menus différents.
+J'ai choisi un menu type "tabs" pour les différents modules mais on peut sans difficulté tester des types de menus différents.
 
 La disposition côte à côte (sur la largeur) de la carte et du graphique permet à mon avis de tirer parti au maximum de l'écran.
 
 ## Déploiement
+
+Pour l'instant l'appli fonctionne sur mon compte huma-num, et ne repose que sur R/shiny (pas d'intégration des données sur QGIS server, pas de dockerisation pour l'instant).
 
 # Prochaines étapes dans la construction de l'appli
 
@@ -52,7 +60,29 @@ Modularisation, documentation des fonctions, ajout sur github
 
 # Notes pour dev
 
+## Utilisation de golem pour la production de l'appli
 
+Bouquin de ThinkR sur golem [ici](https://engineering-shiny.org/)
 
+golem aide à écrire une appli "production-ready" et repose sur divers principes
+
+- une appli=un package. On retrouve de ce fait un certain nombre de principes liés à la construction d'un package (documentation, fourniture de données comme faisant partie du package, écriture de vignette, tests, etc.) => package usethis notamment.
+
+- une appli= un assortiment de modules qui fonctionnent indépendamment les uns des autres. De ce fait, chaque module correspond à un "namespace" qui lui est propre. Voir article de C. Girard "La communication entre modles et ses caprices" [ici](https://rtask.thinkr.fr/fr/la-communication-entre-modules-et-ses-caprices/) si besoin de faire passer des éléments d'un module à l'autre. 
+
+## Fonctionnement sur compte Shiny Server Huma-num
+
+Attention, fonctionnement de Shiny Server avec la version de R 3.5 pour le moment (alors que Shiny Desktop a par défaut la version 3.6).
+
+Par ailleurs, les packages chargés par Shiny Server peuvent être ceux installés par Huma-Num plutôt que les packages "User" => problèmes éventuels avec les versions des packages, par exemple package `vctrs`. 
+
+Ajout des lignes de commande suivantes dans app.R:
+
+```{r}
+mylibraries=c(.libPaths(),
+              "../../../R/x86_64-pc-linux-gnu-library/3.5")
+library(vctrs,lib.loc=mylibraries)
+library(rlang,lib.loc=mylibraries)
+```
 
 
