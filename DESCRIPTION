@@ -1,0 +1,21 @@
+Package: mapdO
+Title: mapdO: exploration de données fluviales
+Version: 0.0.0.9000
+Authors@R: person('Lise', 'Vaudor', email = 'lise.vaudor@ens-lyon.fr', role = c('cre', 'aut'))
+Description: Blabla. Blabla.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    shiny,
+    golem,
+    dplyr,
+    pkgload,
+    leaflet,
+    vctrs
+RoxygenNote: 7.1.0
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

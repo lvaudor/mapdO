@@ -1,0 +1,58 @@
+---
+title: "guidelines"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{guidelines}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(mapdO)
+```
+
+# Etat actuel de l'appli
+
+## Structure
+
+Pour l'instant, deux modules:
+
+- un module **profils**
+- un module **modèles régionaux
+
+Les deux jeux de données sont pour l'instant différents pour les deux modules: il faudra, in fine, homogénéiser ça quand les jeux de données "définitifs" seront disponibles.
+
+
+## Layout
+
+Pour l'instant j'ai appelé l'appli "mapdO" et j'ai fait un faux logo vite fait pour la démo.
+
+J'ai choixi un menu type "tabs" pour les différents modules mais on peut sans difficulté tester des types de menus différents.
+
+La disposition côte à côte (sur la largeur) de la carte et du graphique permet à mon avis de tirer parti au maximum de l'écran.
+
+## Déploiement
+
+# Prochaines étapes dans la construction de l'appli
+
+Ajouter le plot au modèle régional: choix du descripteur x, du descripteur y
+
+Brush plot vers carte => brush carte vers plot
+
+Profils => ajuster graphiques des landcovers: side, type
+
+Modularisation, documentation des fonctions, ajout sur github
+
+# Notes pour dev
+
+
+
+
+
