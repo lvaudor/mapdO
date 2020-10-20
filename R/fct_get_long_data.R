@@ -1,12 +1,21 @@
-get_data=function(axis,inputtype){
-  if(!is.null(inputtype)){
+#' Get data regarding metric for a river
+#'
+#' @param axis river id
+#' @param y metric
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_data=function(axis,y){
+  if(!is.null(y)){
   tibinput=tibcorr %>% 
-    dplyr::filter(type==inputtype)
-  filename=tibinput %>% dplyr::pull(filename)
+    dplyr::filter(type==y)
+  filename=tibinput %>%
+    dplyr::pull(filename)
   ncpath=glue::glue("{dat.path}/axis{axis}/{filename}.nc")
   datanc=tidync::tidync(ncpath)%>% 
-    tidync::hyper_tibble() 
-  datanc=datanc%>% 
+    tidync::hyper_tibble() %>% 
     dplyr::select(dplyr::everything(),
                   xvar=dplyr::matches(tibinput %>% dplyr::pull(xname)),
                   yvar=dplyr::matches(tibinput %>% dplyr::pull(yname))) %>% 

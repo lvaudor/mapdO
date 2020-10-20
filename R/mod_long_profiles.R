@@ -58,8 +58,10 @@ mod_long_profiles_server <- function(input, output, session){
 
   ns <- session$ns
   output$map <- leaflet::renderLeaflet({
-    basic_map(datsp)
+    basic_map() %>% 
+    add_rivers_to_map(datsp)
   })
+  
   observeEvent(rget_axis(),{
     datsp=datsf %>% sf::as_Spatial()
     ind=which(datsp$axis==rget_axis())
@@ -70,7 +72,7 @@ mod_long_profiles_server <- function(input, output, session){
   })
   output$selectdescriptor=renderUI({
     rget_axis()
-    tagList(radioButtons(ns("type"),
+    tagList(radioButtons(ns("yvar"),
                          label="Choisir une métrique",
                          choices=tibcorr$type))
   })
@@ -92,13 +94,13 @@ mod_long_profiles_server <- function(input, output, session){
 
       
   observeEvent(input$plot_brush,{
-    bounds=get_map_bounds(rget_axis(),input$plot_brush$xmin, input$plot_brush$xmax)
+    rect=get_rect_bounds(rget_axis(),input$plot_brush$xmin, input$plot_brush$xmax)
     map=leaflet::leafletProxy("map",session) %>% 
       leaflet::clearGroup("points") %>% 
-      leaflet::addRectangles(bounds$lng[1],
-                             bounds$lat[1],
-                             bounds$lng[2],
-                             bounds$lat[2], group="points")
+      leaflet::addRectangles(rect$lng[1],
+                             rect$lat[1],
+                             rect$lng[2],
+                             rect$lat[2], group="points")
   })
   rget_clickmap=eventReactive(input$map_shape_click,{input$map_shape_click$id})
   rget_axis=reactive({
@@ -115,17 +117,12 @@ mod_long_profiles_server <- function(input, output, session){
     }
     result
   })
-  rget_data=reactive({get_data(rget_axis(),input$type)})
+  rget_data=reactive({get_data(axis=rget_axis(),
+                               y=input$yvar)})
 
   output$plot=renderPlot({
     tib=req(rget_data())
-    p=ggplot2::ggplot(tib, ggplot2::aes(x=rev(xvar),y=yvar))+
-      ggplot2::labs(x="distance along axis",
-                    y=input$type)
-    if(stringr::str_detect(input$type,"LANDCOVER")){
-      p=p+ggplot2::geom_path(ggplot2::aes(color=landcover))
-    }else{p=p+ggplot2::geom_path()}
-    p
+    plot_profiles(tib,input$yvar)
   })
 }
     

@@ -8,7 +8,7 @@
 ## 2.1 Add modules
 ## 
 golem::add_module( name = "regional_models" ) # Name of the module
-golem::add_fct("palettes")
+golem::add_fct("subset_spdata")
 
 golem::use_utils_server()
 

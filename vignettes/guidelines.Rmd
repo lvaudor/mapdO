@@ -32,31 +32,44 @@ Pour l'instant, deux modules:
 - un module **profils**
 - un module **modèles régionaux**
 
-Les deux jeux de données sont pour l'instant différents pour les deux modules: il faudra, in fine, homogénéiser ça quand les jeux de données "définitifs" seront disponibles.
+Les deux jeux de données sont pour l'instant différents pour les deux modules: il faudra, in fine, homogénéiser ça quand les jeux de données "définitifs" seront disponibles. 
 
-Un des points à discuter pour améliorer la lisibilité de l'appli: quels noms donner aux couches, et aux modules, pour être plus compréhensible par les utilisateurs? L'appli sera-t-elle en français ou en anglais?
+Pour le module {modèles régionaux}, j'utilise le jeu de données d'Elise sur RMC qui me permet de tester différents types de combinaisons de variables x-y. Par contre le référentiel n'est pas le même que celui utilisé pour le module {profils}. Cela devrait être réglé lorsqu'on utilisera des données récentes et propres pour ce module.
+
+Quelques points à discuter pour améliorer la **lisibilité de l'appli**: 
+
+- quels noms donner aux **couches d'information géographiques**
+- quels noms donner aux **modules**?
+- comment **légender** les différents widgets
+- L'appli sera-t-elle en **français** ou en **anglais**?
 
 ## Layout
 
-Pour l'instant j'ai appelé l'appli "mapdO" et j'ai fait un faux logo vite fait pour la démo.
+Pour l'instant j'ai appelé l'appli **mapd** et j'ai fait un faux logo vite fait pour la démo.
 
 J'ai choisi un menu type "tabs" pour les différents modules mais on peut sans difficulté tester des types de menus différents.
 
-La disposition côte à côte (sur la largeur) de la carte et du graphique permet à mon avis de tirer parti au maximum de l'écran.
+La **disposition côte à côte** (sur la largeur) de la carte et du graphique permet à mon avis de tirer parti au maximum de l'écran.
 
 ## Déploiement
 
-Pour l'instant l'appli fonctionne sur mon compte huma-num, et ne repose que sur R/shiny (pas d'intégration des données sur QGIS server, pas de dockerisation pour l'instant).
+Pour l'instant l'appli fonctionne sur mon **compte Shiny Server huma-num**, et ne repose que sur R/shiny (pas d'intégration des données sur QGIS server, pas de dockerisation pour l'instant).
 
-# Prochaines étapes dans la construction de l'appli
+# To-do list
 
-Ajouter le plot au modèle régional: choix du descripteur x, du descripteur y
+## A faire prochainement
 
-Brush plot vers carte => brush carte vers plot
+- modifier la fonction get_rect_bounds pour pouvoir l'utiliser dans le module regional_models.
+- Organiser les scripts de préparation des données (pour l'instant tout est rassemblé dans data-raw/dataset.R)
+- Brush plot vers carte => brush carte vers plot
+- Profils => ajuster graphiques des landcovers: side, type
 
-Profils => ajuster graphiques des landcovers: side, type
+## A refaire régulièrement
 
-Modularisation, documentation des fonctions, ajout sur github
+- **Nettoyage** (nettoyage des prints, suppression des éléments tests)
+- **Modularisation**
+- **Documentation** (fonctions, vignette)
+- Commit + Push sur **repo github**
 
 # Notes pour dev
 
@@ -66,9 +79,9 @@ Bouquin de ThinkR sur golem [ici](https://engineering-shiny.org/)
 
 golem aide à écrire une appli "production-ready" et repose sur divers principes
 
-- une appli=un package. On retrouve de ce fait un certain nombre de principes liés à la construction d'un package (documentation, fourniture de données comme faisant partie du package, écriture de vignette, tests, etc.) => package usethis notamment.
+- **une appli=un package**. On retrouve de ce fait un certain nombre de principes liés à la construction d'un package (documentation, fourniture de données comme faisant partie du package, écriture de vignette, tests, etc.) => package usethis notamment.
 
-- une appli= un assortiment de modules qui fonctionnent indépendamment les uns des autres. De ce fait, chaque module correspond à un "namespace" qui lui est propre. Voir article de C. Girard "La communication entre modles et ses caprices" [ici](https://rtask.thinkr.fr/fr/la-communication-entre-modules-et-ses-caprices/) si besoin de faire passer des éléments d'un module à l'autre. 
+- **une appli= un assortiment de modules** qui fonctionnent indépendamment les uns des autres. De ce fait, chaque module correspond à un "namespace" qui lui est propre. Voir article de C. Girard "La communication entre modles et ses caprices" [ici](https://rtask.thinkr.fr/fr/la-communication-entre-modules-et-ses-caprices/) si besoin de faire passer des éléments d'un module à l'autre. 
 
 ## Fonctionnement sur compte Shiny Server Huma-num
 
