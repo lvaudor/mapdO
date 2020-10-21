@@ -1,23 +1,14 @@
 ---
-title: "guidelines: appli mapdO"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{guidelines}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+title: "Guidelines: appli mapdO"
+output: 
+  html_document:
+    toc: true
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
 
 ```{r setup}
 library(mapdO)
 ```
-
 
 Démo [ici](https://analytics.huma-num.fr/Lise.Vaudor/mapdO_demo1/)
 
@@ -46,6 +37,7 @@ Quelques points à discuter pour améliorer la **lisibilité de l'appli**:
 - comment **légender** les différents widgets
 - L'appli sera-t-elle en **français** ou en **anglais**?
 
+
 ## Interactivité
 
 ## Layout
@@ -60,6 +52,21 @@ La **disposition côte à côte** (sur la largeur) de la carte et du graphique p
 
 Pour l'instant l'appli fonctionne sur mon **compte Shiny Server huma-num**, et ne repose que sur R/shiny 
 (pas d'intégration des données sur QGIS server, pas de dockerisation pour l'instant).
+
+# Etat actuel des données
+
+## Données régionales
+
+- Référentiel de JeuDeDonneesEBFVar à jeter car pb identifiant => utilisé actuellement pour datsp (envoi par Christophe en ../09/20 )
+- métriques du Var de JeudeDonneesEBFVar <=> Axe 1 (??) (envoi par Christophe en ../09/20 )
+- Référentiel RMC (envoi par Samuel le 21/10/20) => à intégrer comme carte régionale pour module "profils"
+- métriques de l'Isère (envoi par Samuel le 21/10/20)
+- métriques de l'Isère (AX0005) de l'Arc (AX0012) le Drac (AX0009) (envoi par Christophe le 21/10/20)
+
+```{r}
+fs::dir_tree("../data-raw/extdata/IsereEtAffluents/AX0005/METRICS")
+```
+
 
 # To-do list
 
@@ -105,4 +112,11 @@ library(vctrs,lib.loc=mylibraries)
 library(rlang,lib.loc=mylibraries)
 ```
 
+# Remarques
+
+Forcer le render de guidelines:
+
+```{r,eval=FALSE}
+rmarkdown::render("vignettes/guidelines.Rmd")
+```
 
