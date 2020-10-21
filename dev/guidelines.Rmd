@@ -1,0 +1,122 @@
+---
+title: "Guidelines: appli mapdO"
+output: 
+  html_document:
+    toc: true
+---
+
+
+```{r setup}
+library(mapdO)
+```
+
+Démo [ici](https://analytics.huma-num.fr/Lise.Vaudor/mapdO_demo1/)
+
+Repo github [ici](https://github.com/lvaudor/mapdO/)
+
+# Etat actuel de l'appli
+
+## Structure
+
+Pour l'instant, deux modules:
+
+- un module **profils**
+- un module **modèles régionaux**
+
+Les deux jeux de données sont pour l'instant différents pour les deux modules:
+
+il faudra, in fine, homogénéiser ça quand les jeux de données "définitifs" seront disponibles. 
+Pour le module {modèles régionaux}, j'utilise le jeu de données d'Elise sur RMC.
+Cela me permet de tester différents types de combinaisons de variables x-y. 
+Par contre le référentiel n'est pas le même que celui utilisé pour le module {profils}. Cela devrait être réglé lorsqu'on utilisera des données récentes et propres pour ce module.
+
+Quelques points à discuter pour améliorer la **lisibilité de l'appli**: 
+
+- quels noms donner aux **couches d'information géographiques**
+- quels noms donner aux **modules**?
+- comment **légender** les différents widgets
+- L'appli sera-t-elle en **français** ou en **anglais**?
+
+
+## Interactivité
+
+## Layout
+
+Pour l'instant j'ai appelé l'appli **mapdO** et j'ai fait un faux logo vite fait pour la démo.
+
+J'ai choisi un menu type "tabs" pour les différents modules mais on peut sans difficulté tester des types de menus différents.
+
+La **disposition côte à côte** (sur la largeur) de la carte et du graphique permet à mon avis de tirer parti au maximum de l'écran.
+
+## Déploiement
+
+Pour l'instant l'appli fonctionne sur mon **compte Shiny Server huma-num**, et ne repose que sur R/shiny 
+(pas d'intégration des données sur QGIS server, pas de dockerisation pour l'instant).
+
+# Etat actuel des données
+
+## Données régionales
+
+- Référentiel de JeuDeDonneesEBFVar à jeter car pb identifiant => utilisé actuellement pour datsp (envoi par Christophe en ../09/20 )
+- métriques du Var de JeudeDonneesEBFVar <=> Axe 1 (??) (envoi par Christophe en ../09/20 )
+- Référentiel RMC (envoi par Samuel le 21/10/20) => à intégrer comme carte régionale pour module "profils"
+- métriques de l'Isère (envoi par Samuel le 21/10/20)
+- métriques de l'Isère (AX0005) de l'Arc (AX0012) le Drac (AX0009) (envoi par Christophe le 21/10/20)
+
+```{r}
+fs::dir_tree("../data-raw/extdata/IsereEtAffluents/AX0005/METRICS")
+```
+
+
+# To-do list
+
+## A faire prochainement
+
+- Changer les noms des datasets pour qqch de plus générique (exple datRMC => data_regional)
+- Organiser les scripts de préparation des données (pour l'instant tout est rassemblé dans data-raw/dataset.R)
+- Brush plot vers carte => brush carte vers plot
+- Profils => ajuster graphiques des landcovers: side, type
+- Faire des widgets simplifiés pour choix des métriques
+
+## A refaire régulièrement
+
+- **Nettoyage** (nettoyage des prints, suppression des éléments tests)
+- **Modularisation**
+- **Documentation** (fonctions, vignette)
+- Commit + Push sur **repo github**
+
+# Notes pour dev
+
+## Utilisation de golem pour la production de l'appli
+
+Bouquin de ThinkR sur golem [ici](https://engineering-shiny.org/)
+
+golem aide à écrire une appli "production-ready" et repose sur divers principes
+
+- **une appli=un package**. On retrouve de ce fait un certain nombre de principes liés à la construction d'un package (documentation, fourniture de données comme faisant partie du package, écriture de vignette, tests, etc.) => package usethis notamment.
+
+- **une appli= un assortiment de modules** qui fonctionnent indépendamment les uns des autres. De ce fait, chaque module correspond à un "namespace" qui lui est propre. Voir article de C. Girard "La communication entre modles et ses caprices" [ici](https://rtask.thinkr.fr/fr/la-communication-entre-modules-et-ses-caprices/) si besoin de faire passer des éléments d'un module à l'autre. 
+
+## Fonctionnement sur compte Shiny Server Huma-num
+
+Attention, fonctionnement de Shiny Server avec la version de R 3.5 pour le moment (alors que Shiny Desktop a par défaut la version 3.6).
+
+Par ailleurs, les packages chargés par Shiny Server peuvent être ceux installés par Huma-Num plutôt que les packages "User" => problèmes éventuels avec les versions des packages, par exemple package `vctrs`. 
+
+Ajout des lignes de commande suivantes dans app.R:
+
+```{r}
+mylibraries=c(.libPaths(),
+              "../../../R/x86_64-pc-linux-gnu-library/3.5")
+library(vctrs,lib.loc=mylibraries)
+library(rlang,lib.loc=mylibraries)
+```
+
+# Remarques
+
+Forcer le render de guidelines:
+
+```{r,eval=FALSE}
+rmarkdown::render("vignettes/guidelines.Rmd")
+```
+
