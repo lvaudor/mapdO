@@ -15,20 +15,12 @@ mod_regional_models_ui <- function(id){
              sliderInput(ns("strahler"),
                          label="Afficher rivières de niveau Strahler",
                          min=0,max=7,value=c(5,7),step=1)
-             # radioButtons(ns("selectaxistype"),
-             #              label="Choisir un axe",
-             #              choices=c("en cliquant sur la carte",
-             #                        "depuis un menu déroulant"),
-             #              selected="en cliquant sur la carte"),
-             # uiOutput(ns("menu"))
-             
       ),#column
       column(width=3,
              radioButtons(ns("xvar"),"variable x",table_regmod$label)
       ),
       column(width=3,
              radioButtons(ns("yvar"),"variable y",table_regmod$label)
-             #uiOutput(ns("selectdescriptor"))
       )#column
     ),#fluidRow
     fluidRow(
@@ -79,12 +71,11 @@ mod_regional_models_server <- function(input, output, session){
                                    input$plot_brush$xmax,
                                    input$plot_brush$ymin,
                                    input$plot_brush$ymax)
-    print(ids)
     map=leaflet::leafletProxy("map",session) %>% 
-      leaflet::clearGroup("points") %>% 
+      leaflet::clearGroup("rivers_in_brush") %>% 
       leaflet::addPolylines(data=datRMCsp %>% subset(idn %in% ids),
                             col="red",
-                            group="points")
+                            group="rivers_in_brush")
   })
 }
     
