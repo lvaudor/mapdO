@@ -17,15 +17,13 @@ plot_profiles=function(dat,y){
   return(p)
 }
 
-#' Title
-#'
-#' @param x 
-#' @param y 
-#'
-#' @return
+#' Produces scatterplot of y against x
+#' @param x variable name in the regional dataset (with quotes)
+#' @param y variable name in the regional dataset (with quotes)
+#' @return scatterplot
 #' @export
-#'
 #' @examples
+#' plot_regmod("m_surf_bf","m_lrgm_ba")
 plot_regmod=function(x,y){
   ggplot2::ggplot(datRMC, ggplot2::aes_string(x=x,y=y))+
     ggplot2::geom_point()+
