@@ -49,8 +49,8 @@ get_rect_bounds_from_profile=function(obj_id,lmin,lmax){
 
 get_rivers_from_scatterplot=function(xvar,yvar,brush_xmin,brush_xmax,brush_ymin,brush_ymax){
   id=datRMC %>% 
-    dplyr::mutate_(xvar=xvar,
-                   yvar=yvar) %>% 
+    dplyr::select(xvar=dplyr::matches(xvar),
+                  yvar=dplyr::matches(yvar)) %>% 
     dplyr::filter(xvar>=brush_xmin,
                   xvar<=brush_xmax,
                   yvar>=brush_ymin,
