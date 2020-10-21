@@ -19,7 +19,7 @@ library(mapdO)
 ```
 
 
-Démo [ici](https://analytics.huma-num.fr/Lise.Vaudor/mapdO/)
+Démo [ici](https://analytics.huma-num.fr/Lise.Vaudor/mapdO_demo1/)
 
 Repo github [ici](https://github.com/lvaudor/mapdO/)
 
