@@ -36,13 +36,25 @@ add_rivers_to_map=function(map,spdata){
                           popup= ~popup)
 }
 
-get_rect_bounds=function(obj_id,lmin,lmax){
+get_rect_bounds_from_profile=function(obj_id,lmin,lmax){
   res=datsp %>% 
-    subset(axis %in% obj_id) %>% 
+    subset(axis == obj_id) %>% 
     subset(invm>lmin & invm<lmax) %>% 
     sp::bbox() %>% 
     as.numeric()
   dat=data.frame(lng=c(res[1],res[3]),
                  lat=c(res[2],res[4]))
   return(dat)
+}
+
+get_rivers_from_scatterplot=function(xvar,yvar,brush_xmin,brush_xmax,brush_ymin,brush_ymax){
+  id=datRMC %>% 
+    dplyr::mutate_(xvar=xvar,
+                   yvar=yvar) %>% 
+    dplyr::filter(xvar>=brush_xmin,
+                  xvar<=brush_xmax,
+                  yvar>=brush_ymin,
+                  yvar<=brush_ymax) %>% 
+    dplyr::pull(idn)
+  return(id)
 }

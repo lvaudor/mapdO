@@ -24,10 +24,10 @@ mod_regional_models_ui <- function(id){
              
       ),#column
       column(width=3,
-             radioButtons(ns("xvar"),"variable x",tib_regmod$label)
+             radioButtons(ns("xvar"),"variable x",table_regmod$label)
       ),
       column(width=3,
-             radioButtons(ns("yvar"),"variable y",tib_regmod$label)
+             radioButtons(ns("yvar"),"variable y",table_regmod$label)
              #uiOutput(ns("selectdescriptor"))
       )#column
     ),#fluidRow
@@ -68,19 +68,23 @@ mod_regional_models_server <- function(input, output, session){
     add_rivers_to_map(spdat)
   })
   output$plot <- renderPlot({
-    x=tib_regmod %>% dplyr::filter(label==input$xvar) %>% dplyr::pull(nom)
-    y=tib_regmod %>% dplyr::filter(label==input$yvar) %>% dplyr::pull(nom)
+    x=table_regmod %>% dplyr::filter(label==input$xvar) %>% dplyr::pull(name)
+    y=table_regmod %>% dplyr::filter(label==input$yvar) %>% dplyr::pull(name)
     plot_regmod(x,y)
   })
   observeEvent(input$plot_brush,{
-    bounds=get_rect_bounds(rget_axis(),input$plot_brush$xmin, input$plot_brush$xmax)
+    ids=get_rivers_from_scatterplot(table_regmod %>% dplyr::filter(label==input$xvar) %>% dplyr::pull(name),
+                                    table_regmod %>% dplyr::filter(label==input$yvar) %>% dplyr::pull(name),
+                                   input$plot_brush$xmin,
+                                   input$plot_brush$xmax,
+                                   input$plot_brush$ymin,
+                                   input$plot_brush$ymax)
+    print(ids)
     map=leaflet::leafletProxy("map",session) %>% 
       leaflet::clearGroup("points") %>% 
-      leaflet::addRectangles(bounds$lng[1],
-                             bounds$lat[1],
-                             bounds$lng[2],
-                             bounds$lat[2], 
-                             group="points")
+      leaflet::addPolylines(data=datRMCsp %>% subset(idn %in% ids),
+                            col="red",
+                            group="points")
   })
 }
     

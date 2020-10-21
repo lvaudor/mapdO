@@ -74,7 +74,7 @@ mod_long_profiles_server <- function(input, output, session){
     rget_axis()
     tagList(radioButtons(ns("yvar"),
                          label="Choisir une métrique",
-                         choices=tibcorr$type))
+                         choices=table_profiles$type))
   })
   
   output$menu=renderUI({
@@ -94,13 +94,14 @@ mod_long_profiles_server <- function(input, output, session){
 
       
   observeEvent(input$plot_brush,{
-    rect=get_rect_bounds(rget_axis(),input$plot_brush$xmin, input$plot_brush$xmax)
+    rect=get_rect_bounds_from_profile(rget_axis(),input$plot_brush$xmin, input$plot_brush$xmax)
     map=leaflet::leafletProxy("map",session) %>% 
       leaflet::clearGroup("points") %>% 
       leaflet::addRectangles(rect$lng[1],
                              rect$lat[1],
                              rect$lng[2],
-                             rect$lat[2], group="points")
+                             rect$lat[2],
+                             group="points")
   })
   rget_clickmap=eventReactive(input$map_shape_click,{input$map_shape_click$id})
   rget_axis=reactive({
