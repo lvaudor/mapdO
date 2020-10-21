@@ -17,3 +17,6 @@ get_data(axis, y)
 \description{
 Get data regarding metric for a river
 }
+\examples{
+get_data(1,"Long profile(m)")
+}

@@ -2,18 +2,21 @@
 % Please edit documentation in R/fct_plots.R
 \name{plot_regmod}
 \alias{plot_regmod}
-\title{Title}
+\title{Produces scatterplot of y against x}
 \usage{
 plot_regmod(x, y)
 }
 \arguments{
-\item{x}{}
+\item{x}{variable name in the regional dataset (with quotes)}
 
-\item{y}{}
+\item{y}{variable name in the regional dataset (with quotes)}
 }
 \value{
-
+scatterplot
 }
 \description{
-Title
+Produces scatterplot of y against x
+}
+\examples{
+plot_regmod("m_surf_bf","m_lrgm_ba")
 }

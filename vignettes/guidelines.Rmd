@@ -43,9 +43,11 @@ Quelques points à discuter pour améliorer la **lisibilité de l'appli**:
 - comment **légender** les différents widgets
 - L'appli sera-t-elle en **français** ou en **anglais**?
 
+## Interactivité
+
 ## Layout
 
-Pour l'instant j'ai appelé l'appli **mapd** et j'ai fait un faux logo vite fait pour la démo.
+Pour l'instant j'ai appelé l'appli **mapdO** et j'ai fait un faux logo vite fait pour la démo.
 
 J'ai choisi un menu type "tabs" pour les différents modules mais on peut sans difficulté tester des types de menus différents.
 
@@ -59,10 +61,11 @@ Pour l'instant l'appli fonctionne sur mon **compte Shiny Server huma-num**, et n
 
 ## A faire prochainement
 
-- modifier la fonction get_rect_bounds pour pouvoir l'utiliser dans le module regional_models.
+- Changer les noms des datasets pour qqch de plus générique (exple datRMC => data_regional)
 - Organiser les scripts de préparation des données (pour l'instant tout est rassemblé dans data-raw/dataset.R)
 - Brush plot vers carte => brush carte vers plot
 - Profils => ajuster graphiques des landcovers: side, type
+- Faire des widgets simplifiés pour choix des métriques
 
 ## A refaire régulièrement
 
