@@ -28,8 +28,8 @@ mod_long_profiles_ui <- function(id){
                           choices=c("en cliquant sur la carte",
                                     "depuis un menu déroulant"),
                           selected="en cliquant sur la carte"),
-             uiOutput(ns("menu"))
-
+             uiOutput(ns("menu")),
+             p("SVP sélectionnez le Var je n'ai pas d'autres données pour le moment...")
              ),#column
       column(width=6,
              uiOutput(ns("selectdescriptor"))
