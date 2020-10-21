@@ -32,9 +32,12 @@ Pour l'instant, deux modules:
 - un module **profils**
 - un module **modèles régionaux**
 
-Les deux jeux de données sont pour l'instant différents pour les deux modules: il faudra, in fine, homogénéiser ça quand les jeux de données "définitifs" seront disponibles. 
+Les deux jeux de données sont pour l'instant différents pour les deux modules:
 
-Pour le module {modèles régionaux}, j'utilise le jeu de données d'Elise sur RMC qui me permet de tester différents types de combinaisons de variables x-y. Par contre le référentiel n'est pas le même que celui utilisé pour le module {profils}. Cela devrait être réglé lorsqu'on utilisera des données récentes et propres pour ce module.
+il faudra, in fine, homogénéiser ça quand les jeux de données "définitifs" seront disponibles. 
+Pour le module {modèles régionaux}, j'utilise le jeu de données d'Elise sur RMC.
+Cela me permet de tester différents types de combinaisons de variables x-y. 
+Par contre le référentiel n'est pas le même que celui utilisé pour le module {profils}. Cela devrait être réglé lorsqu'on utilisera des données récentes et propres pour ce module.
 
 Quelques points à discuter pour améliorer la **lisibilité de l'appli**: 
 
@@ -55,7 +58,8 @@ La **disposition côte à côte** (sur la largeur) de la carte et du graphique p
 
 ## Déploiement
 
-Pour l'instant l'appli fonctionne sur mon **compte Shiny Server huma-num**, et ne repose que sur R/shiny (pas d'intégration des données sur QGIS server, pas de dockerisation pour l'instant).
+Pour l'instant l'appli fonctionne sur mon **compte Shiny Server huma-num**, et ne repose que sur R/shiny 
+(pas d'intégration des données sur QGIS server, pas de dockerisation pour l'instant).
 
 # To-do list
 
