@@ -41,7 +41,7 @@ golem::add_css_file( "custom" )
 ## 3.1 Vignette
 usethis::use_vignette("mapdO")
 devtools::build_vignettes()
-
+usethis::use_readme_md()
 ## 3.2 Code coverage
 ## You'll need GitHub there
 usethis::use_github()
