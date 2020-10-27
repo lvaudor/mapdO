@@ -1,7 +1,4 @@
-dat.path="data-raw/extdata/JeuDeDonneesEBFVar/JeuDeDonneesEBF"
-
-
-datsf=sf::st_read(glue::glue("{dat.path}/REF/REFERENTIEL_HYDRO.shp")) %>% 
+datsf=sf::st_read("data-raw/global/REFERENTIEL_HYDRO.shp") %>% 
   sf::st_zm() %>%
   sf::st_simplify(dTolerance=100) %>% 
   sf::st_transform(4326) %>% 
@@ -11,14 +8,13 @@ datsf=sf::st_read(glue::glue("{dat.path}/REF/REFERENTIEL_HYDRO.shp")) %>%
   dplyr::mutate(invm=maxm-measure) %>%
   dplyr::ungroup()
 datsp=sf::as_Spatial(datsf)
-usethis::use_data(dat.path)
 usethis::use_data(datsp, overwrite=T)
 usethis::use_data(datsf, overwrite=T)
 
-datncE=tidync::tidync("data-raw/extdata/donneesElise/BD_RhoneMediterraneeCorse.nc") %>% 
+datncE=tidync::tidync("data-raw/global/donneesElise/BD_RhoneMediterraneeCorse.nc") %>% 
   tidync::hyper_tibble() %>% 
   dplyr::mutate(idn=1:dplyr::n()) 
-datRMC=sf::st_read("data-raw/extdata/donneesElise/networkElise_continu.shp") %>% 
+datRMC=sf::st_read("data-raw/global/donneesElise/networkElise_continu.shp") %>% 
   sf::st_simplify(dTolerance=100) %>% 
   sf::st_transform(4326) %>% 
   dplyr::mutate(idn=1:dplyr::n()) %>% 

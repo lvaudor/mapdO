@@ -12,7 +12,7 @@ add_rivers_to_map(map, spdata)
 \item{spdata}{the polylines spatial data corresponding to rivers that will be added to the leaflet map}
 }
 \value{
-
+map with river lines
 }
 \description{
 Title

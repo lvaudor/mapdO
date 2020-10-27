@@ -12,11 +12,11 @@ get_data(axis, y)
 \item{y}{metric}
 }
 \value{
-
+tibble with data xvar and yvar
 }
 \description{
 Get data regarding metric for a river
 }
 \examples{
-get_data(1,"Long profile(m)")
+get_data(1,"Profil en long (m)")
 }

@@ -392,8 +392,9 @@ summary {
 <li><a href="#notes-pour-dev">Notes pour dev</a><ul>
 <li><a href="#utilisation-de-golem-pour-la-production-de-lappli">Utilisation de golem pour la production de l’appli</a></li>
 <li><a href="#fonctionnement-sur-compte-shiny-server-huma-num">Fonctionnement sur compte Shiny Server Huma-num</a></li>
-</ul></li>
 <li><a href="#remarques">Remarques</a></li>
+<li><a href="#handlers-pour-les-cartes-leaflet">“Handlers” pour les cartes leaflet</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -504,11 +505,23 @@ summary {
 library(vctrs,lib.loc=mylibraries)
 library(rlang,lib.loc=mylibraries)</code></pre>
 </div>
-</div>
-<div id="remarques" class="section level1">
-<h1>Remarques</h1>
+<div id="remarques" class="section level2">
+<h2>Remarques</h2>
 <p>Forcer le render de guidelines:</p>
 <pre class="r"><code>rmarkdown::render(&quot;vignettes/guidelines.Rmd&quot;)</code></pre>
+</div>
+<div id="handlers-pour-les-cartes-leaflet" class="section level2">
+<h2>“Handlers” pour les cartes leaflet</h2>
+<p>list input handlers for a package shiny leaflet (<a href="https://stackoverflow.com/questions/49885751/list-input-handlers-for-a-package-shiny-leaflet/49886501" class="uri">https://stackoverflow.com/questions/49885751/list-input-handlers-for-a-package-shiny-leaflet/49886501</a>)</p>
+<ul>
+<li>zoom</li>
+<li>center (lng, lat)</li>
+<li>bounds (north, east, south, west)</li>
+<li>groups</li>
+<li>shape_mouseover (id, .nonce, group, lat, lng)</li>
+<li>shape_mouseout (id, .nonce, group, lat, lng)</li>
+</ul>
+</div>
 </div>
 
 

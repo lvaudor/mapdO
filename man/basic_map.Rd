@@ -12,6 +12,3 @@ leaflet map
 \description{
 Produce leaflet map to be used as a basis for displaying layers
 }
-\examples{
-basic_map()
-}

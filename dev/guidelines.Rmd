@@ -53,9 +53,20 @@ La **disposition côte à côte** (sur la largeur) de la carte et du graphique p
 Pour l'instant l'appli fonctionne sur mon **compte Shiny Server huma-num**, et ne repose que sur R/shiny 
 (pas d'intégration des données sur QGIS server, pas de dockerisation pour l'instant).
 
+Attention à la version de R par défaut (et aux chemins associés vers les librairies "user")
+
+- Sur **RStudio** Server Pro, **R 3.6**
+- Sur **Shiny** Server Pro, **R 3.5**
+
+Pour mettre à jour la démo:
+
+- Faire un "build" du package (commande load_all() du template golem n'est valable que si la structure du dossier local est celle d'un package). Attention il faut que la documentation par roxygen n'ait pas renvoyé d'erreur!
+- Unload packages au démarrage de l'appli
+- nécessité de vider le cache Shiny => supprimer le dossier associé à la démo avant de le recréer à partir de mapdO/dev/copy_to_demo.R
+
 # Etat actuel des données
 
-## Données régionales
+## Jeux de données dispo
 
 - Référentiel de JeuDeDonneesEBFVar à jeter car pb identifiant => utilisé actuellement pour datsp (envoi par Christophe en ../09/20 )
 - métriques du Var de JeudeDonneesEBFVar <=> Axe 1 (??) (envoi par Christophe en ../09/20 )
@@ -63,9 +74,16 @@ Pour l'instant l'appli fonctionne sur mon **compte Shiny Server huma-num**, et n
 - métriques de l'Isère (envoi par Samuel le 21/10/20)
 - métriques de l'Isère (AX0005) de l'Arc (AX0012) le Drac (AX0009) (envoi par Christophe le 21/10/20)
 
+Structure des données envoyées par Christophe:
+
 ```{r}
 fs::dir_tree("../data-raw/extdata/IsereEtAffluents/AX0005/METRICS")
 ```
+
+## QUESTIONS
+
+Doit-on prévoir que les métriques ne soient pas toutes les mêmes (i.e. différentes métriques en fonction de l'axe) => choisir l'axe, proposer les métriques dispo dans les données?
+
 
 
 # To-do list
@@ -112,11 +130,17 @@ library(vctrs,lib.loc=mylibraries)
 library(rlang,lib.loc=mylibraries)
 ```
 
-# Remarques
+## Problème de cache
 
-Forcer le render de guidelines:
+https://community.rstudio.com/t/remove-shiny-cache/16932/2
 
-```{r,eval=FALSE}
-rmarkdown::render("vignettes/guidelines.Rmd")
-```
+## "Handlers" pour les cartes leaflet
 
+list input handlers for a package shiny leaflet (https://stackoverflow.com/questions/49885751/list-input-handlers-for-a-package-shiny-leaflet/49886501)
+
+- zoom
+- center (lng, lat)
+- bounds (north, east, south, west)
+- groups
+- shape_mouseover (id, .nonce, group, lat, lng)
+- shape_mouseout (id, .nonce, group, lat, lng)
