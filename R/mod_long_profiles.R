@@ -57,6 +57,7 @@ mod_long_profiles_ui <- function(id){
 mod_long_profiles_server <- function(input, output, session){
 
   ns <- session$ns
+  
   output$map <- leaflet::renderLeaflet({
     basic_map() %>% 
     add_rivers_to_map(datsp)

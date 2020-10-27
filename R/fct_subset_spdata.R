@@ -3,10 +3,8 @@
 #' @param spdata 
 #' @param bounds 
 #'
-#' @return
+#' @return subset of spdata
 #' @export
-#'
-#' @examples
 subset_spdata=function(spdata,bounds){
   
   if (is.null(bounds)){return(spdata)}

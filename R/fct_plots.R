@@ -1,6 +1,6 @@
 #' Plot metric along river
 #'
-#' @param data data with columns named xvar and yvar
+#' @param dat data with columns named xvar and yvar
 #' @param y y-axis label
 #' @return a plot showing yvar against xvar
 #' @export
