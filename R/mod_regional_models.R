@@ -65,12 +65,12 @@ mod_regional_models_server <- function(input, output, session){
     plot_regmod(x,y)
   })
   observeEvent(input$plot_brush,{
-    ids=mapdO::get_rivers_from_scatterplot(table_regmod %>% dplyr::filter(label==input$xvar) %>% dplyr::pull(name),
+    ids=get_rivers_from_scatterplot(table_regmod %>% dplyr::filter(label==input$xvar) %>% dplyr::pull(name),
                                     table_regmod %>% dplyr::filter(label==input$yvar) %>% dplyr::pull(name),
-                                   input$plot_brush$xmin,
-                                   input$plot_brush$xmax,
-                                   input$plot_brush$ymin,
-                                   input$plot_brush$ymax)
+                                    input$plot_brush$xmin,
+                                    input$plot_brush$xmax,
+                                    input$plot_brush$ymin,
+                                    input$plot_brush$ymax)
     map=leaflet::leafletProxy("map",session) %>% 
       leaflet::clearGroup("rivers_in_brush") %>% 
       leaflet::addPolylines(data=datRMCsp %>% subset(idn %in% ids),
