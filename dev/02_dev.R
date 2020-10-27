@@ -7,15 +7,15 @@
 
 ## 2.1 Add modules
 ## 
-golem::add_module( name = "regional_models" ) # Name of the module
-golem::add_fct("subset_spdata")
+golem::add_module( name = "test" ) # Name of the module
+golem::add_fct("utils")
 
 golem::use_utils_server()
 
 ## 2.2 Add dependencies
 
 usethis::use_package("shiny")
-usethis::use_package( "dplyr" ) # To call each time you need a new package
+usethis::use_package( "dplyr")
 usethis::use_package( "sf" ) 
 usethis::use_package( "tidync" ) 
 usethis::use_package("leaflet")
