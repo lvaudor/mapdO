@@ -1,4 +1,5 @@
 #' @import shiny
+#' @export
 app_ui <- function() {
   fluidPage(
    fluidRow(
@@ -9,7 +10,8 @@ app_ui <- function() {
   
   tabsetPanel(
     tabPanel("Profils",mod_long_profiles_ui("long_profiles_ui_1")),
-    tabPanel("Modèle régional",mod_regional_models_ui("regional_models_ui_1"))
+    tabPanel("Modèle régional",mod_regional_models_ui("regional_models_ui_1")),
+    tabPanel("Test dev",mod_test_ui("test_ui_1"))
   )
   )
 }
