@@ -7,9 +7,9 @@
 plot_profiles(dat, y)
 }
 \arguments{
-\item{y}{y-axis label}
+\item{dat}{data with columns named xvar and yvar}
 
-\item{data}{data with columns named xvar and yvar}
+\item{y}{y-axis label}
 }
 \value{
 a plot showing yvar against xvar

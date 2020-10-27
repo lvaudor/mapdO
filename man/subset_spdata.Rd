@@ -12,7 +12,7 @@ subset_spdata(spdata, bounds)
 \item{bounds}{}
 }
 \value{
-
+subset of spdata
 }
 \description{
 Title
