@@ -12,7 +12,9 @@ Imports:
     dplyr,
     pkgload,
     leaflet,
-    vctrs
+    vctrs,
+    sf,
+    magrittr
 RoxygenNote: 7.1.0
 Suggests: 
     testthat,
