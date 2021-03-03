@@ -4,11 +4,13 @@
 \name{table_regmod}
 \alias{table_regmod}
 \title{table documenting possible types of regional models}
-\format{A tibble with variables
+\format{
+A tibble with variables
 \describe{
   \item{name}{possible metric type (as asked for in the app)}
   \item{label}{corresponding file name}
-}}
+}
+}
 \usage{
 table_regmod
 }

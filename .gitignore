@@ -1,7 +1,4 @@
-inst/doc
 .Rproj.user
-data-raw
-data-raw/
-data-raw
 .Rhistory
 .Rdata
+data-raw

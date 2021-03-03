@@ -17,6 +17,6 @@ Produces scatterplot of y against x
 }
 \examples{
 plot_regmod(calc_regmod(datRMC \%>\% sf::st_drop_geometry(),
-"surface de la bande fluviale",
-"surface de la bande active"))
+ "surface de la bande fluviale",
+ "surface de la bande active"))
 }
