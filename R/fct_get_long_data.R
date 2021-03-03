@@ -10,7 +10,7 @@ get_datapath=function(axis,zvar){
     filename=table_metrics %>% 
       dplyr::filter(varname==zvar) %>%
       dplyr::pull(filename)
-    path=glue::glue("data-raw/AXES/{axis}/METRICS/{filename}.csv")
+    path=glue::glue("data_AXES/{axis}/{filename}.csv")
     if(!file.exists(path)){path=NULL}
     return(path)
   }
@@ -120,14 +120,21 @@ get_shape=function(axis){
 #' @examples
 #' get_coords("AX0005")
 get_coords=function(axis){
-  shp=sf::st_read(glue::glue("data-raw/AXES/{axis}/MEASURE/SWATHS_REFAXIS.shp")) %>% 
+  shp=sf::st_read(glue::glue("data_AXES/{axis}/SWATHS_REFAXIS.shp")) %>% 
     sf::st_centroid() %>% 
     sf::st_transform(4326) 
  return(shp)
 }
 
+#' Get available metrics for a river
+#'
+#' @param axis river id
+#' @return list of metrics families
+#' @export
+#' @examples
+#' get_available_info("AX0005")
 get_available_info=function(axis){
-  dir=glue::glue("data-raw/AXES/{axis}/METRICS/")
+  dir=glue::glue("data_AXES/{axis}/")
   available=list.files(dir) %>% 
     stringr::str_subset("\\.csv") %>% 
     stringr::str_replace("\\.csv","")
