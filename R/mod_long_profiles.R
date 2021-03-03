@@ -21,31 +21,32 @@ mod_long_profiles_ui <- function(id){
     # List the first level UI elements here 
     # Application title
     fluidPage(
-    fluidRow(
-      column(width=6,
-             radioButtons(ns("selectaxistype"),
-                          label="Choisir un axe",
-                          choices=c("en cliquant sur la carte",
-                                    "depuis un menu déroulant"),
-                          selected="en cliquant sur la carte"),
-             uiOutput(ns("menu")),
-             p("SVP sélectionnez le Var je n'ai pas d'autres données pour le moment...")
+      wellPanel(
+       fluidRow(
+      column(width=2,
+             p("Sélectionner un cours d'eau en cliquant sur la carte.")
              ),#column
-      column(width=6,
-             uiOutput(ns("selectdescriptor"))
-            )#column
-    ),#fluidRow
+      column(width=2,
+             uiOutput(ns("ui_zvar"))
+            ),
+      column(width=2,
+             uiOutput(ns("ui_landcover")),
+             uiOutput(ns("ui_continuity")),
+             uiOutput(ns("ui_historic"))
+            )
+      )#fluidRow
+      ),#wellPanel
       fluidRow(
-        column(width=6,
-               leaflet::leafletOutput(ns("map"))
+        column(width=4,
+               leaflet::leafletOutput(ns("maplongprof"))
                ),#column
-        column(width=6,
+        column(width=8,
                plotOutput(ns("plot"),
-                   brush = ns("plot_brush"))
+                          brush = ns("plot_brush"))
                )#column
       )
     )#fluidPage
-  )
+  )#tagList
 }
     
 # Module Server
@@ -58,45 +59,27 @@ mod_long_profiles_server <- function(input, output, session){
 
   ns <- session$ns
   
-  output$map <- leaflet::renderLeaflet({
-    basic_map() %>% 
-    add_rivers_to_map(datsp)
+  output$maplongprof <- leaflet::renderLeaflet({
+    mapobj
   })
   
   observeEvent(rget_axis(),{
-    datsp=datsf %>% sf::as_Spatial()
-    ind=which(datsp$axis==rget_axis())
-    map=leaflet::leafletProxy("map",session) %>%
+    river=datsf %>% 
+      dplyr::filter(ID==rget_axis())
+    print(river)
+    map=leaflet::leafletProxy("maplongprof",session) %>%
       leaflet::clearGroup("pouet") %>%
-      leaflet::addPolylines(data=datsp[ind,],color="red",group="pouet")
+      leaflet::addPolylines(data=river,
+                            color="blue",
+                            group="pouet")
     map
   })
-  output$selectdescriptor=renderUI({
-    rget_axis()
-    tagList(radioButtons(ns("yvar"),
-                         label="Choisir une métrique",
-                         choices=table_profiles$type))
-  })
-  
-  output$menu=renderUI({
-    if(input$selectaxistype=="depuis un menu déroulant"){
-      result=selectInput(ns("axisselect"),
-                         "choix d'un axe",
-                         datsf$toponyme %>% as.vector(),
-                         selected=datsf %>%
-                          dplyr::group_by(toponyme) %>%
-                          dplyr::summarise(n=dplyr::n()) %>%
-                          dplyr::slice_max(n) %>%
-                          dplyr::pull(toponyme) %>%
-                          as.vector())
-    }else{result=NULL}
-    result
-    })
 
-      
   observeEvent(input$plot_brush,{
-    rect=get_rect_bounds_from_profile(rget_axis(),input$plot_brush$xmin, input$plot_brush$xmax)
-    map=leaflet::leafletProxy("map",session) %>% 
+    rect=get_rect_bounds_from_profile(axis=rget_axis(),
+                                      input$plot_brush$xmin*1000, 
+                                      input$plot_brush$xmax*1000)
+    map=leaflet::leafletProxy("maplongprof",session) %>% 
       leaflet::clearGroup("points") %>% 
       leaflet::addRectangles(rect$lng[1],
                              rect$lat[1],
@@ -104,27 +87,103 @@ mod_long_profiles_server <- function(input, output, session){
                              rect$lat[2],
                              group="points")
   })
-  rget_clickmap=eventReactive(input$map_shape_click,{input$map_shape_click$id})
+
   rget_axis=reactive({
-    if(input$selectaxistype=="en cliquant sur la carte"){result=rget_clickmap()}
-    if(input$selectaxistype=="depuis un menu déroulant"){
-      if(is.null(input$axisselect)){myaxis=1}else{myaxis=input$axisselect}
-      result=datsf %>% 
-        dplyr::filter(as.vector(toponyme)==myaxis) %>% 
-        sf::st_drop_geometry() %>% 
-        dplyr::group_by(axis) %>%
-        dplyr::summarise(n=dplyr::n())%>% 
-        dplyr::slice_max(order_by=n,n=1) %>% 
-        dplyr::pull(axis)
+    if(is.null(input$maplongprof_shape_click$id)){clickid="AX0001"}else{
+      clickid=input$maplongprof_shape_click$id}
+    clickid
+  })
+  
+  output$ui_zvar=renderUI({
+    axis=rget_axis()
+    available_choices=table_metrics %>% 
+      dplyr::filter(filename %in% get_available_info(axis),
+                    include==1,
+                    typelzk=="z") %>% 
+      dplyr::pull(varname)
+    result=tagList(radioButtons(inputId=ns("zvar"),
+                                 label="variable",
+                                 choices=available_choices))
+    result
+  })
+  output$ui_landcover=renderUI({
+    result=NULL
+    req(input$zvar)
+    if(stringr::str_detect(input$zvar,"landcover")){
+      result=tagList(selectInput(ns("keep_landcovers"),
+                                 "Afficher ces types:",
+                                 choices=landcovers,
+                                 selected=landcovers,
+                                 selectize=TRUE,
+                                 multiple=TRUE),
+                     radioButtons(ns("facet_landcovers"),
+                                  "Graphique",
+                                  c("Unique","Multiple"))
+                      )
     }
     result
   })
-  rget_data=reactive({get_data(axis=rget_axis(),
-                               y=input$yvar)})
-
+  output$ui_continuity=renderUI({
+    result=NULL
+    req(input$zvar)
+    if(stringr::str_detect(input$zvar,"continuity")){
+      result=tagList(selectInput(ns("keep_continuities"),
+                                 "Afficher ces types:",
+                                 choices=continuities,
+                                 selected=continuities,
+                                 selectize=TRUE,
+                                 multiple=TRUE),
+                     radioButtons(ns("facet_continuities"),
+                                  "Graphique",
+                                  c("Unique","Multiple"))
+      )
+    }
+    result
+  })
+  output$ui_historic=renderUI({
+    result=NULL
+    req(input$zvar)
+    if(stringr::str_detect(input$zvar,"historic")){
+      result=tagList(selectInput(ns("keep_landcovers_hist"),
+                                 "Afficher ces types:",
+                                 choices=landcovers_hist,
+                                 selected=landcovers_hist,
+                                 selectize=TRUE,
+                                 multiple=TRUE)
+      )
+    }
+    result
+  })
+  
   output$plot=renderPlot({
-    tib=req(rget_data())
-    plot_profiles(tib,input$yvar)
+    info=get_info(axis=rget_axis(),
+                  zvar=req(input$zvar)
+    )
+    if(info$typevar=="landcover"){
+      facets=req(input$facet_landcovers)
+      keep=req(input$keep_landcovers)
+      p=plot_landcover_profiles(info=info,
+                                facets=facets,
+                                keep=keep)
+    }
+    if(info$typevar=="continuity"){
+      facets=req(input$facet_continuities)
+      keep=req(input$keep_continuities)
+      p=plot_continuity_profiles(info=info,
+                                 facets=facets,
+                                 keep=keep)
+    }
+    if(info$typevar=="historic"){
+      keep_landcovers_hist=req(input$keep_landcovers_hist)
+      p=plot_historic_profiles(info=info,
+                               keep_landcover=keep_landcovers_hist,
+                               keep_time=NA)
+    }
+    
+    if(info$typevar=="metrics"){
+      p=plot_profiles(info)
+    }
+    p
   })
 }
     

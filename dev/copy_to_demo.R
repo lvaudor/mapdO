@@ -4,10 +4,10 @@ copy_to_demo=function(demo_name="demo"){
       #file.remove(path_demo,recursive=TRUE)
       R.utils::copyDirectory(from=paste0(path_mapdO,"inst"),
                              to=paste0(path_demo,"inst"))
-      R.utils::copyDirectory(from=paste0(path_mapdO,"data-raw/axes"),
-                             to=paste0(path_demo,"data-raw/axes"))
+      R.utils::copyDirectory(from=paste0(path_mapdO,"data-raw/AXES"),
+                             to=paste0(path_demo,"data-raw/AXES"))
       file.copy(from=paste0(path_mapdO,"app.R"),
                 to=  paste0(path_demo,"app.R"),
                 overwrite=TRUE)
 }
-copy_to_demo("demo2")
+copy_to_demo("demo1")

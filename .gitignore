@@ -1,7 +1,7 @@
 inst/doc
 .Rproj.user
-data-raw/extdata
-data-raw/axes
-data-raw/global
+data-raw
+data-raw/
+data-raw
 .Rhistory
 .Rdata

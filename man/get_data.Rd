@@ -4,19 +4,19 @@
 \alias{get_data}
 \title{Get data regarding metric for a river}
 \usage{
-get_data(axis, y)
+get_data(axis, zvar)
 }
 \arguments{
 \item{axis}{river id}
 
-\item{y}{metric}
+\item{zvar}{metric}
 }
 \value{
-tibble with data xvar and yvar
+tibble with data xvar and zvar
 }
 \description{
 Get data regarding metric for a river
 }
 \examples{
-get_data(1,"Profil en long (m)")
+get_data("AX0005","talweg_slope")
 }

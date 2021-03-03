@@ -17,35 +17,64 @@ basic_map=function(){
 #' Title
 #'
 #' @param map a leaflet map
-#' @param spdata the polylines spatial data corresponding to rivers that will be added to the leaflet map
+#' @param sp the polylines spatial data corresponding to rivers that will be added to the leaflet map
 #'
 #' @return map with river lines
 #' @export
-#' @examples basic_map() %>% add_rivers_to_map(datsp)
-add_rivers_to_map=function(map,spdata){
+#' @examples 
+#' basic_map() %>%
+#'  add_rivers_to_map(sfdata=datsf ,vcolor=NA,vpopup="ID")
+add_rivers_to_map=function(map,sfdata, vlayerId="ID", vcolor=NA, vpopup="popup"){
+  sfdata=sfdata %>% 
+    dplyr::mutate_(popup=vpopup,
+                   layerId=vlayerId) %>% 
+    dplyr::mutate(color=rep("grey",nrow(sfdata)))
+  if(!is.na(vcolor)){
+    sfdata=sfdata %>% 
+      dplyr::mutate_(color=vcolor)
+    classcolor=class(sfdata$color)
+      if(classcolor=="factor"|classcolor=="character"){
+        sfdata=sfdata %>% 
+          mutate(color=as.factor(color))
+        pal <- leaflet::colorFactor(c("red", "blue"),
+                                    levels(sfdata$color))
+      }
+      if(classcolor=="numeric"){
+        pal <- leaflet::colorNumeric(c("red", "yellow", "blue"),
+                                     unique(sfdata$color))
+      }
+      sfdata=sfdata %>% 
+        dplyr::mutate(color=pal(sfdata$color))
+  }
   map %>% 
-    leaflet::addPolylines(data = spdata,
-                          layerId=spdata$axis,
-                          color = ~mypalette(strahler),
-                          popup= ~popup)
+    leaflet::addPolylines(data = sfdata,
+                          layerId= ~sfdata$layerId,
+                          popup= ~sfdata$popup,
+                          color= ~sfdata$color)
 }
 
 #' Get bounds of rectangle (on map) based on rectangle on plot
 #'
-#' @param obj_id river id
+#' @param profile_data profile_data
 #' @param lmin minimum distance along axis
 #' @param lmax maximum distance along axis
 #'
 #' @return data with min-max of lng and min-max of lat
 #' @export
-get_rect_bounds_from_profile=function(obj_id,lmin,lmax){
-  res=datsp %>% 
-    subset(axis == obj_id) %>% 
-    subset(invm>lmin & invm<lmax) %>% 
-    sp::bbox() %>% 
-    as.numeric()
-  dat=data.frame(lng=c(res[1],res[3]),
-                 lat=c(res[2],res[4]))
+#' @examples 
+#' get_rect_bounds_from_profile(axis="AX0005", lmin=1500, lmax=3000)
+get_rect_bounds_from_profile=function(axis,lmin,lmax){
+    shp=mapdO:::get_coords(axis)
+    coords=shp %>%
+        dplyr::filter(M>=lmin,M<=lmax) %>% 
+        sf::st_coordinates() %>% 
+        tibble::as_tibble() %>% 
+        dplyr::summarise(minlng=min(X),
+                         maxlng=max(X),
+                         minlat=min(Y),
+                         maxlat=max(Y))
+  dat=data.frame(lng=c(coords$minlng,coords$maxlng),
+                 lat=c(coords$minlat,coords$maxlat))
   return(dat)
 }
 

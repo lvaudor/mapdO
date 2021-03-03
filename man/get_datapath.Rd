@@ -4,12 +4,12 @@
 \alias{get_datapath}
 \title{Get datapath towards file with metric data for a river}
 \usage{
-get_datapath(axis, y)
+get_datapath(axis, zvar)
 }
 \arguments{
 \item{axis}{river id}
 
-\item{y}{metric}
+\item{zvar}{metric}
 }
 \value{
 path towards metric data for river
@@ -18,5 +18,5 @@ path towards metric data for river
 Get datapath towards file with metric data for a river
 }
 \examples{
-get_datapath(1,"Profil en long (m)")
+get_datapath("AX0005","talweg_slope")
 }

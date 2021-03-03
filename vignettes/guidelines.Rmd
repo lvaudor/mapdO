@@ -8,6 +8,7 @@ output:
 
 ```{r setup}
 library(mapdO)
+library(dplyr)
 ```
 
 Démo [ici](https://analytics.huma-num.fr/Lise.Vaudor/mapdO_demo1/)
@@ -64,7 +65,68 @@ Pour l'instant l'appli fonctionne sur mon **compte Shiny Server huma-num**, et n
 - métriques de l'Isère (AX0005) de l'Arc (AX0012) le Drac (AX0009) (envoi par Christophe le 21/10/20)
 
 ```{r}
-fs::dir_tree("../data-raw/extdata/IsereEtAffluents/AX0005/METRICS")
+#fs::dir_tree("../data-raw/extdata/IsereEtAffluents/AX0005/METRICS")
+```
+
+
+# Package
+
+## Contenu du package mapdO
+
+```{r, echo=FALSE}
+listFunctions <- function(function.name, all_functions){
+  function_code <- deparse(get(function.name)) %>% paste(collapse=" ")
+  tib_result=tibble::tibble(called_functions=all_functions) %>% 
+    mutate(detect=paste0(called_functions,"\\s*\\(")) %>% 
+    group_by(detect) %>% 
+    mutate(detected=purrr::map_lgl(.x=detect,
+                                   ~stringr::str_detect(function_code,.x))) %>% 
+    filter(detected) %>%
+    ungroup() %>% 
+    select(called_functions) 
+  return(tib_result)
+}
+```
+
+
+```{r}
+funs_mapdO=tibble(functions=ls("package:mapdO")) %>% 
+  mutate(app_utils=stringr::str_detect(functions,"mod_|app")) %>%
+  mutate(app_ui=stringr::str_detect(functions,"_ui")) %>% 
+  filter(app_ui==FALSE) %>% 
+  group_by(functions,app_utils)  %>%
+  mutate(calls_functions=purrr::map(functions,listFunctions,all_functions=.$functions)) %>% 
+  tidyr::unnest(cols=calls_functions)
+
+nodes=funs_mapdO$functions %>% unique() %>% paste(collapse=";")
+edges=funs_mapdO %>% 
+  dplyr::mutate(edges=purrr::map2_chr(.x=functions,
+                              .y=called_functions,
+                              ~ paste(.x,"->",.y))) %>% 
+  dplyr::pull(edges) %>% 
+  paste(collapse=" ")
+
+DiagrammeR::grViz(paste("
+digraph boxes_and_circles {
+
+  # a 'graph' statement
+  graph [overlap = true, fontsize = 10]
+
+  # several 'node' statements
+  node [shape = box,
+        fontname = Helvetica]",
+  nodes,
+  edges,
+  "}")
+)
+```
+
+Tables de correspondance
+
+```{r}
+table_metrics
+
+table_regmod
 ```
 
 
@@ -119,4 +181,54 @@ Forcer le render de guidelines:
 ```{r,eval=FALSE}
 rmarkdown::render("vignettes/guidelines.Rmd")
 ```
+# Message / Données mapdO
 
+Données EBF Grands Axes
+Ce n'est pas encore parfait, mais c'est ce que j'ai pu faire rapidement ;
+je n'ai pas réussi à rassembler tous les profils en travers dans un seul fichier et il manque les variables calculées pour le tracé en plan.
+Je vous enverrai un update quand j'aurais réglé mes derniers problèmes de cuisine.
+
+L'archive contient :
+
+1. un docx avec les tableaux des métriques
+
+2. un dossier 'Référentiel hydro' avec le référentiel hydrographique dérivé de la BD Topo (14 octobre 2020) constitué des cours d'eau d'une longueur > 10 km ayant un identifiant BD Carthage ;
+deux versions : FINAL = réseau de tronçons BDT correctement connectés les uns aux autres, AGG = tronçons agrégés par axe hydrographique.
+Identifiant numérique des axes hydrographiques = champ AXIS.
+Chaque axe hydrographique a aussi un identifiant BD Carthage CdEntiteHydr
+
+3. un dossier 'Hypsomètres' avec les hypsomètres par zone hydro et classe d'occupation du sol
+
+4. un dossier 'Grands Axes' avec les données EBF pour les 19 cours d'eau les plus longs du bassin du Rhône, avec :
+
++ REF_HYDRO => un extrait du référentiel hydrographique avec les grands axes + les axes de référence (REFAXIS.shp) qui correspondent ici à l'axe médian du FDV
++ les cartes produites avec la FCT : occupation du sol, hauteurs relatives, continuité latérale avec un projet QGis pour les visualiser (c'est celui que j'ai déployé dans QGis Server si vous voulez tout savoir)
++ pour chaque axe un dossier AXES/AXnnnn avec
+- MEASURE/SWATHS_REFAXIS.shp => les polygones de DGOs = swaths de 200 m de long
+- METRICS/PLANFORM.nc => variables du tracé en plan qui ne correspondent pas à des DGO mais qui sont repérés dans le même système de coordonnée (axis, measure)
+- METRICS/LONG_PROFILE.nc => métriques par DGO = profil longitudinal
+- METRICS/SWATDonnées EBF Grands Axes
+Ce n'est pas encore parfait, mais c'est ce que j'ai pu faire rapidement ;
+je n'ai pas réussi à rassembler tous les profils en travers dans un seul fichier et il manque les variables calculées pour le tracé en plan.
+Je vous enverrai un update quand j'aurais réglé mes derniers problèmes de cuisine.
+
+L'archive contient :
+
+1. un docx avec les tableaux des métriques
+
+2. un dossier 'Référentiel hydro' avec le référentiel hydrographique dérivé de la BD Topo (14 octobre 2020) constitué des cours d'eau d'une longueur > 10 km ayant un identifiant BD Carthage ;
+deux versions : FINAL = réseau de tronçons BDT correctement connectés les uns aux autres, AGG = tronçons agrégés par axe hydrographique.
+Identifiant numérique des axes hydrographiques = champ AXIS.
+Chaque axe hydrographique a aussi un identifiant BD Carthage CdEntiteHydr
+
+3. un dossier 'Hypsomètres' avec les hypsomètres par zone hydro et classe d'occupation du sol
+
+4. un dossier 'Grands Axes' avec les données EBF pour les 19 cours d'eau les plus longs du bassin du Rhône, avec :
+
++ REF_HYDRO => un extrait du référentiel hydrographique avec les grands axes + les axes de référence (REFAXIS.shp) qui correspondent ici à l'axe médian du FDV
++ les cartes produites avec la FCT : occupation du sol, hauteurs relatives, continuité latérale avec un projet QGis pour les visualiser (c'est celui que j'ai déployé dans QGis Server si vous voulez tout savoir)
++ pour chaque axe un dossier AXES/AXnnnn avec
+- MEASURE/SWATHS_REFAXIS.shp => les polygones de DGOs = swaths de 200 m de long
+- METRICS/PLANFORM.nc => variables du tracé en plan qui ne correspondent pas à des DGO mais qui sont repérés dans le même système de coordonnée (axis, measure)
+- METRICS/LONG_PROFILE.nc => métriques par DGO = profil longitudinal
+- METRICS/SWATHS_*.nc => profils en traversHS_*.nc => profils en travers

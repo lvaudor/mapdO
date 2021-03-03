@@ -4,12 +4,12 @@
 \alias{add_rivers_to_map}
 \title{Title}
 \usage{
-add_rivers_to_map(map, spdata)
+add_rivers_to_map(map, sfdata, vlayerId = "ID", vcolor = NA, vpopup = "popup")
 }
 \arguments{
 \item{map}{a leaflet map}
 
-\item{spdata}{the polylines spatial data corresponding to rivers that will be added to the leaflet map}
+\item{sp}{the polylines spatial data corresponding to rivers that will be added to the leaflet map}
 }
 \value{
 map with river lines
@@ -18,5 +18,6 @@ map with river lines
 Title
 }
 \examples{
-basic_map() \%>\% add_rivers_to_map(datsp)
+basic_map() \%>\%
+ add_rivers_to_map(sfdata=datsf ,vcolor=NA,vpopup="ID")
 }

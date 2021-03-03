@@ -98,7 +98,7 @@ Doit-on prévoir que les métriques ne soient pas toutes les mêmes (i.e. diffé
 
 ## A refaire régulièrement
 
-- **Nettoyage** (nettoyage des prints, suppression des éléments tests)
+- **Nettoyage** (suppression des éléments tests)
 - **Modularisation**
 - **Documentation** (fonctions, vignette)
 - Commit + Push sur **repo github**

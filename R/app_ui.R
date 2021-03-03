@@ -1,18 +1,19 @@
 #' @import shiny
 #' @export
 app_ui <- function() {
-  fluidPage(
-   fluidRow(
-   column(width=1,
-          tags$img(src = "www/mapdO.png", height = 72, width = 72)),
-   column(width=1,tags$h1("mapdO"))
-   ),#fluidRow
-  
-  tabsetPanel(
+  navbarPage(
+    title =
+      div(
+        img(
+          src = "www/mapdO.png",
+          height = 40,
+          width = 100,
+          style = "margin:-11px -12px"
+        )
+      ),#"MapdO",#tags$img(src = "www/mapdO.png", height = 50, width = 50),
     tabPanel("Profils",mod_long_profiles_ui("long_profiles_ui_1")),
     tabPanel("Modèle régional",mod_regional_models_ui("regional_models_ui_1")),
     tabPanel("Test dev",mod_test_ui("test_ui_1"))
-  )
   )
 }
 # 

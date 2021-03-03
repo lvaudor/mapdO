@@ -1,11 +1,17 @@
-#' regional_models UI Function
+# Module UI
+
+#' @title   mod_regional_models_ui and mod_regional_models_server
+#' @description  A shiny Module.
 #'
-#' @description A shiny Module.
+#' @param id shiny id
+#' @param input internal
+#' @param output internal
+#' @param session internal
 #'
-#' @param id,input,output,session Internal parameters for {shiny}.
+#' @rdname mod_regional_models
 #'
-#' @noRd 
-#'
+#' @keywords internal
+#' @export 
 #' @importFrom shiny NS tagList 
 mod_regional_models_ui <- function(id){
   ns <- NS(id)
@@ -17,15 +23,19 @@ mod_regional_models_ui <- function(id){
                          min=0,max=7,value=c(5,7),step=1)
       ),#column
       column(width=3,
-             radioButtons(ns("xvar"),"variable x",table_regmod$label)
+             radioButtons(ns("xvar"),
+                          "variable x",
+                          table_regmod$label)
       ),
       column(width=3,
-             radioButtons(ns("yvar"),"variable y",table_regmod$label)
+             radioButtons(ns("yvar"),
+                          "variable y",
+                          table_regmod$label)
       )#column
     ),#fluidRow
     fluidRow(
       column(width=6,
-             leaflet::leafletOutput(ns("map"))
+             leaflet::leafletOutput(ns("mapregmod"))
       ),#column
       column(width=6,
              plotOutput(ns("plot"),
@@ -35,34 +45,42 @@ mod_regional_models_ui <- function(id){
   )#fluidPage
 }
     
-#' regional_models Server Function
-#'
-#' @noRd 
+#' @rdname mod_regional_models
+#' @export
+#' @keywords internal
 mod_regional_models_server <- function(input, output, session){
   ns <- session$ns
   rsubset_spdata <- reactive({
-    dat=datRMCsp %>% 
-      subset(strahler>=input$strahler[1] & strahler<=input$strahler[2])
-    dat
+    dat=datRMC %>% 
+      dplyr::filter(strahler>=input$strahler[1],
+                    strahler<=input$strahler[2]) %>% 
+      calc_regmod(x=input$xvar,
+                  y=input$yvar)
+    dat$data
   })
   
-  output$map <- leaflet::renderLeaflet({
+  output$mapregmod <- leaflet::renderLeaflet({
     basic_map() %>% 
-    leaflet::addPolylines(data=datRMCsp %>% 
-                          subset(strahler>=input$strahler[1] & strahler<=input$strahler[2]),
-                          group="first_view")
+      add_rivers_to_map(datRMC %>% 
+                          dplyr::filter(strahler>=7),
+                        vlayerId="axis",
+                        vpopup="TOPONYME")
   })
   
   observeEvent(rsubset_spdata(),{
-    spdat=rsubset_spdata()
-    map=leaflet::leafletProxy("map",session) %>%
-    leaflet::clearGroup("first_view") %>% 
-    add_rivers_to_map(spdat)
+    rivers=rsubset_spdata()
+    map=leaflet::leafletProxy("mapregmod",session) 
+    map=map %>%
+    #leaflet::clearGroup("first_view") %>% 
+    add_rivers_to_map(rivers,
+                      vlayerId="axis",
+                      vcolor="relpos",
+                      vpopup="TOPONYME")
   })
   output$plot <- renderPlot({
-    x=table_regmod %>% dplyr::filter(label==input$xvar) %>% dplyr::pull(name)
-    y=table_regmod %>% dplyr::filter(label==input$yvar) %>% dplyr::pull(name)
-    plot_regmod(x,y)
+    plot_regmod(calc_regmod(rsubset_spdata(),
+                            input$xvar,
+                            input$yvar))
   })
   observeEvent(input$plot_brush,{
     ids=get_rivers_from_scatterplot(table_regmod %>% dplyr::filter(label==input$xvar) %>% dplyr::pull(name),
@@ -71,7 +89,7 @@ mod_regional_models_server <- function(input, output, session){
                                     input$plot_brush$xmax,
                                     input$plot_brush$ymin,
                                     input$plot_brush$ymax)
-    map=leaflet::leafletProxy("map",session) %>% 
+    map=leaflet::leafletProxy("mapregmod",session) %>% 
       leaflet::clearGroup("rivers_in_brush") %>% 
       leaflet::addPolylines(data=datRMCsp %>% subset(idn %in% ids),
                             col="red",

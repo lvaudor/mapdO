@@ -20,7 +20,7 @@ mod_test_ui <- function(id){
 mod_test_server <- function(input, output, session){
   ns <- session$ns
   output$info=renderPrint({
-    print(list.files(getwd()))
+    print(input)
   })
 }
     

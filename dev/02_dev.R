@@ -9,7 +9,7 @@
 ## 
 golem::add_module( name = "test" ) # Name of the module
 golem::add_fct("utils")
-
+golem::add_fct("fct_regmod")
 golem::use_utils_server()
 
 ## 2.2 Add dependencies

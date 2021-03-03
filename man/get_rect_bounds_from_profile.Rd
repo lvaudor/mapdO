@@ -4,18 +4,21 @@
 \alias{get_rect_bounds_from_profile}
 \title{Get bounds of rectangle (on map) based on rectangle on plot}
 \usage{
-get_rect_bounds_from_profile(obj_id, lmin, lmax)
+get_rect_bounds_from_profile(axis, lmin, lmax)
 }
 \arguments{
-\item{obj_id}{river id}
-
 \item{lmin}{minimum distance along axis}
 
 \item{lmax}{maximum distance along axis}
+
+\item{profile_data}{profile_data}
 }
 \value{
 data with min-max of lng and min-max of lat
 }
 \description{
 Get bounds of rectangle (on map) based on rectangle on plot
+}
+\examples{
+get_rect_bounds_from_profile(axis="AX0005", lmin=1500, lmax=3000)
 }
