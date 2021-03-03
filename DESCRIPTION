@@ -15,7 +15,7 @@ Imports:
     vctrs,
     sf,
     magrittr
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Suggests: 
     testthat,
     knitr,
