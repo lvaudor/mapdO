@@ -24,30 +24,27 @@ basic_map=function(){
 #' @examples 
 #' basic_map() %>%
 #'  add_rivers_to_map(sfdata=datsf ,vcolor=NA,vpopup="ID")
-add_rivers_to_map=function(map,sfdata, vlayerId="ID", vcolor=NA, vpopup="popup"){
+add_rivers_to_map=function(map,
+                           sfdata,
+                           group="base",
+                           vlayerId="ID",
+                           vcolor=NA,
+                           color="grey",
+                           vpopup="popup"){
   sfdata=sfdata %>% 
     dplyr::mutate_(popup=vpopup,
                    layerId=vlayerId) %>% 
-    dplyr::mutate(color=rep("grey",nrow(sfdata)))
+    dplyr::mutate(color=rep(color,nrow(sfdata)))
   if(!is.na(vcolor)){
     sfdata=sfdata %>% 
       dplyr::mutate_(color=vcolor)
-    classcolor=class(sfdata$color)
-      if(classcolor=="factor"|classcolor=="character"){
-        sfdata=sfdata %>% 
-          mutate(color=as.factor(color))
-        pal <- leaflet::colorFactor(c("red", "blue"),
-                                    levels(sfdata$color))
-      }
-      if(classcolor=="numeric"){
-        pal <- leaflet::colorNumeric(c("red", "yellow", "blue"),
-                                     unique(sfdata$color))
-      }
-      sfdata=sfdata %>% 
+    pal=define_palette(sfdata$color)
+    sfdata=sfdata %>% 
         dplyr::mutate(color=pal(sfdata$color))
   }
   map %>% 
     leaflet::addPolylines(data = sfdata,
+                          group=group,
                           layerId= ~sfdata$layerId,
                           popup= ~sfdata$popup,
                           color= ~sfdata$color)
@@ -89,11 +86,20 @@ get_rect_bounds_from_profile=function(axis,lmin,lmax){
 #'
 #' @return river ids
 #' @export
-get_rivers_from_scatterplot=function(xvar,yvar,brush_xmin,brush_xmax,brush_ymin,brush_ymax){
+get_rivers_from_scatterplot=function(xvar,
+                                     yvar,
+                                     brush_xmin,
+                                     brush_xmax,
+                                     brush_ymin,
+                                     brush_ymax,
+                                     xtrans,
+                                     ytrans){
   id=datRMC %>% 
     dplyr::select(xvar=dplyr::matches(xvar),
                   yvar=dplyr::matches(yvar),
                   idn=idn) %>% 
+    dplyr::mutate(xvar=get(xtrans)(xvar),
+                  yvar=get(ytrans)(yvar)) %>% 
     sf::st_drop_geometry() %>% 
     dplyr::filter(xvar>=brush_xmin,
                   xvar<=brush_xmax,

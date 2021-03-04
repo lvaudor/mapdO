@@ -17,7 +17,7 @@ mod_regional_models_ui <- function(id){
   ns <- NS(id)
   fluidPage(
     fluidRow(
-      column(width=6,
+      column(width=3,
              sliderInput(ns("strahler"),
                          label="Afficher rivières de niveau Strahler",
                          min=0,max=7,value=c(5,7),step=1)
@@ -30,7 +30,16 @@ mod_regional_models_ui <- function(id){
       column(width=3,
              radioButtons(ns("yvar"),
                           "variable y",
-                          table_regmod$label)
+                          table_regmod$label,
+                          selected="largeur moyenne de la bande active")
+      ),#column
+      column(width=3,
+             radioButtons(ns("xtrans"),
+                          "transfo de x",
+                          c("identity","sqrt")),
+             radioButtons(ns("ytrans"),
+                          "transfo de y",
+                          c("identity","sqrt"))
       )#column
     ),#fluidRow
     fluidRow(
@@ -55,32 +64,35 @@ mod_regional_models_server <- function(input, output, session){
       dplyr::filter(strahler>=input$strahler[1],
                     strahler<=input$strahler[2]) %>% 
       calc_regmod(x=input$xvar,
-                  y=input$yvar)
+                  y=input$yvar,
+                  xtrans=input$xtrans,
+                  ytrans=input$ytrans)
     dat$data
   })
   
   output$mapregmod <- leaflet::renderLeaflet({
+    rivers=rsubset_spdata()
     basic_map() %>% 
-      add_rivers_to_map(datRMC %>% 
-                          dplyr::filter(strahler>=7),
+      add_rivers_to_map(rivers,
+                        group="nobrush",
                         vlayerId="axis",
+                        vcolor="relpos",
                         vpopup="TOPONYME")
   })
   
-  observeEvent(rsubset_spdata(),{
-    rivers=rsubset_spdata()
-    map=leaflet::leafletProxy("mapregmod",session) 
-    map=map %>%
-    #leaflet::clearGroup("first_view") %>% 
-    add_rivers_to_map(rivers,
-                      vlayerId="axis",
-                      vcolor="relpos",
-                      vpopup="TOPONYME")
-  })
+  # observeEvent(rsubset_spdata(),{
+  # 
+  #   map=leaflet::leafletProxy("mapregmod",session) 
+  #   map=map %>%
+  #   #leaflet::clearGroup("first_view") %>% 
+  # 
+  # })
   output$plot <- renderPlot({
     plot_regmod(calc_regmod(rsubset_spdata(),
                             input$xvar,
-                            input$yvar))
+                            input$yvar,
+                            input$xtrans,
+                            input$ytrans))
   })
   observeEvent(input$plot_brush,{
     ids=get_rivers_from_scatterplot(table_regmod %>% dplyr::filter(label==input$xvar) %>% dplyr::pull(name),
@@ -88,12 +100,17 @@ mod_regional_models_server <- function(input, output, session){
                                     input$plot_brush$xmin,
                                     input$plot_brush$xmax,
                                     input$plot_brush$ymin,
-                                    input$plot_brush$ymax)
+                                    input$plot_brush$ymax,
+                                    input$xtrans,
+                                    input$ytrans)
+    rivers_in_brush=rsubset_spdata() %>%
+      dplyr::filter(idn %in% ids)
     map=leaflet::leafletProxy("mapregmod",session) %>% 
       leaflet::clearGroup("rivers_in_brush") %>% 
-      leaflet::addPolylines(data=datRMCsp %>% subset(idn %in% ids),
-                            col="red",
-                            group="rivers_in_brush")
+      add_rivers_to_map(rivers_in_brush,
+                        vlayerId="idn",
+                        group="rivers_in_brush",
+                        color="#00ff00")
   })
 }
     

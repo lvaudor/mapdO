@@ -4,7 +4,15 @@
 \alias{add_rivers_to_map}
 \title{Title}
 \usage{
-add_rivers_to_map(map, sfdata, vlayerId = "ID", vcolor = NA, vpopup = "popup")
+add_rivers_to_map(
+  map,
+  sfdata,
+  group = "base",
+  vlayerId = "ID",
+  vcolor = NA,
+  color = "grey",
+  vpopup = "popup"
+)
 }
 \arguments{
 \item{map}{a leaflet map}

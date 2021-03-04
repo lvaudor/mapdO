@@ -98,3 +98,28 @@ plot_continuity_profiles=function(info, facets="Unique", keep=NA){
   }
   return(p)
 }
+
+#' Define palette function for a vector/factor
+#' @param vector/factor of values to translate into colors
+#' @return a palette function
+#' @export
+#' @examples
+#' pal=define_palette(c("oui","oui","non","peut-être"))
+#' plot(1:3,rep(1,3),pch=20, cex=3,
+#' col=pal(c("oui","non","peut-être")))
+#' pal=define_palette(seq(0,1,0.1))
+#' plot(1:10,rep(1,10),pch=20, cex=3,
+#' col=pal(seq(0,1,0.1)))
+#' 
+define_palette=function(vcolor){
+  classcolor=class(vcolor)
+  if(classcolor=="factor"|classcolor=="character"){
+    pal <- leaflet::colorFactor(c("red", "blue"),
+                                levels(vcolor))
+  }
+  if(classcolor=="numeric"){
+    pal <- leaflet::colorNumeric(c("red", "yellow", "blue"),
+                                 domain=c(0,1))
+  }
+  return(pal)
+}

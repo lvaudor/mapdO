@@ -4,7 +4,7 @@
 \alias{calc_regmod}
 \title{Produces scatterplot of y against x}
 \usage{
-calc_regmod(data, x, y)
+calc_regmod(data, x, y, xtrans, ytrans)
 }
 \arguments{
 \item{x}{x variable name in the regional dataset (with quotes)}

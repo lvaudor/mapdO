@@ -10,7 +10,9 @@ get_rivers_from_scatterplot(
   brush_xmin,
   brush_xmax,
   brush_ymin,
-  brush_ymax
+  brush_ymax,
+  xtrans,
+  ytrans
 )
 }
 \arguments{
